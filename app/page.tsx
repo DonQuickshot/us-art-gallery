@@ -19,11 +19,12 @@ export default function Home() {
 <nav className="flex justify-between items-center px-8 py-2 border-b border-white/10 backdrop-blur-md bg-white/5">
         <img
   src="/logo.png"
-  alt="Logo of U.S Art Gallery"
+  alt="Logo of U.S. Art Gallery"
   className="h-10 w-auto"
 />
 
         <div className="flex gap-8 text-sm text-gray-300">
+          <a href="/news" className="hover:text-white transition">News & Announcements</a>
           <a href="/gallery" className="hover:text-white transition">Gallery</a>
           <a href="/about" className="hover:text-white transition">About</a>
           <a href="/contact" className="hover:text-white transition">Contact</a>
@@ -35,7 +36,7 @@ export default function Home() {
       <section className="flex flex-col items-center justify-center text-center px-6 py-28">
 
         <h1 className="text-7xl md:text-8xl font-semibold leading-none mb-6 tracking-wide">
-  U.S Art Gallery
+  U.S. Art Gallery
   
   <span className="block text-2xl md:text-3xl font-normal tracking-[0.18em] leading-none mt-2">
     Upasana Sarma Art Gallery
