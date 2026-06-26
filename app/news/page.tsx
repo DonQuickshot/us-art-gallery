@@ -48,7 +48,7 @@ export default async function NewsPage() {
         {/* 3. Main layout wrapper */}
         <main className="max-w-4xl mx-auto p-6 md:p-12 text-white">
           <h1 className="text-4xl font-extrabold tracking-tight mb-2 text-white">News & Announcements</h1>
-          <p className="text-gray-300 mb-10 text-lg">Stay updated with our latest project updates and notices.</p>
+          <p className="text-gray-300 mb-10 text-lg">Stay updated the latest Events and News Updates of U.S. Art Gallery.</p>
           
                   <div className="space-y-8">
           {posts.length === 0 ? (
