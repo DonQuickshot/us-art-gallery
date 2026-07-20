@@ -1,13 +1,13 @@
-import { createClient } from '@sanity/client'
-import imageUrlBuilder from '@sanity/image-url'
-import Image from 'next/image'
-import ShareButton from './buttonshare'
-import { Metadata } from 'next'
+import { createClient } from "@sanity/client"
+import imageUrlBuilder from "@sanity/image-url"
+import Image from "next/image"
+import ShareButton from "./buttonshare"
+import { Metadata } from "next"
 
 const client = createClient({
   projectId: process.env.SANITY_PROJECT_ID, 
   dataset: process.env.SANITY_DATASET,     
-  apiVersion: '2026-07-01',
+  apiVersion: "2026-07-01",
   useCdn: true, 
 })
 
@@ -26,29 +26,29 @@ interface NewsPost {
 }
 
 export const metadata: Metadata = {
-  title: 'News & Announcements | U.S. Art Gallery',
-  description: 'Stay updated with the latest fine art events, national exhibitions, awards, and community news updates from the U.S. Art Gallery.',
+  title: "News & Announcements | U.S. Art Gallery",
+  description: "Stay updated with the latest fine art events, national exhibitions, awards, and community news updates from the U.S. Art Gallery.",
   alternates: {
-    canonical: 'https://usartgallery.com', 
+    canonical: "https://usartgallery.com", 
   },
   openGraph: {
-    title: 'News & Announcements | U.S. Art Gallery',
-    description: 'Stay updated with the latest fine art events, national exhibitions, and awards.',
-    url: 'https://usartgallery.com', 
-    type: 'website',
+    title: "News & Announcements | U.S. Art Gallery",
+    description: "Stay updated with the latest fine art events, national exhibitions, and awards.",
+    url: "https://usartgallery.com", 
+    type: "website",
     images: [
       {
-        url: '/home-bg.png', 
+        url: "/home-bg.png", 
         width: 1200,
         height: 630,
-        alt: 'U.S. Art Gallery Announcements',
+        alt: "U.S. Art Gallery Announcements",
       },
     ],
   },
 }
 
 async function getNewsData(): Promise<NewsPost[]> {
-  const query = \*[_type == "news"] | order(publishedAt desc)\
+  const query = `*[_type == "news"] | order(publishedAt desc)`
   return await client.fetch(query)
 }
 
@@ -84,7 +84,7 @@ export default async function NewsPage() {
   return (
     <div 
       className="min-h-screen bg-fixed bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: \url('/home-bg.png')\ }} 
+      style={{ backgroundImage: "url('/home-bg.png')" }} 
     >
       <script
         type="application/ld+json"
@@ -113,10 +113,10 @@ export default async function NewsPage() {
                         dateTime={post.publishedAt} 
                         className="text-sm font-semibold tracking-wide text-blue-400 uppercase block mb-1"
                       >
-                        {new Date(post.publishedAt).toLocaleDateString('en-US', { 
-                          year: 'numeric', 
-                          month: 'long', 
-                          day: 'numeric' 
+                        {new Date(post.publishedAt).toLocaleDateString("en-US", { 
+                          year: "numeric", 
+                          month: "long", 
+                          day: "numeric" 
                         })}
                       </time>
                       
@@ -155,7 +155,7 @@ export default async function NewsPage() {
                           <div key={idx} className="w-full rounded-xl overflow-hidden bg-white/5 border border-white/5 shadow-md relative h-40">
                             <Image 
                               src={urlFor(img).url()} 
-                              alt={img.alt || \\ gallery exhibition image \\} 
+                              alt={img.alt || `${post.title} gallery exhibition image ${idx + 1}`} 
                               fill
                               className="object-cover hover:scale-105 transition-transform duration-200"
                               sizes="(max-w-4xl) 33vw"
