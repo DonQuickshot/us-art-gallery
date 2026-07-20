@@ -1,6 +1,8 @@
 import { createClient } from '@sanity/client'
 import imageUrlBuilder from '@sanity/image-url'
 import Image from 'next/image'
+// 1. Import the correctly named component from your new file
+import ShareButton from './ShareButton'
 
 const client = createClient({
   projectId: process.env.SANITY_PROJECT_ID, // 🔒 Secure (Removed NEXT_PUBLIC_)
@@ -77,8 +79,8 @@ export default async function NewsPage() {
                     {/* Container wrapping the new Share Button next to your existing triangle */}
                     <div className="flex items-center gap-2 flex-shrink-0">
                       
-                      {/* Integrated Share Button */}
-                      <InlineShareButton title={post.title} id={post._id} />
+                      {/* 2. Using the clean, imported Client-Side Share Button component */}
+                      <ShareButton title={post.title} id={post._id} />
 
                       {/* Dropdown Indicator Arrow */}
                       <span className="text-gray-400 group-open:rotate-180 transition-transform duration-300 text-xl font-light px-2">
@@ -87,7 +89,7 @@ export default async function NewsPage() {
                     </div>
                   </summary>
 
-                  {/* 2. Hidden Content (Body, Banner, Gallery) - Only shows when open */}
+                  {/* 3. Hidden Content (Body, Banner, Gallery) - Only shows when open */}
                   <div className="px-6 md:px-8 pb-8 pt-2 border-t border-white/5 data-content">
                     
                     {/* FIXED: Main Banner Image (No longer cuts off or limits height) */}
@@ -129,48 +131,5 @@ export default async function NewsPage() {
         </main>
       </div>
     </div>
-  )
-}
-
-/* ==========================================================================
-   5. Interactive Share Component (Client-Side Only)
-   ========================================================================== */
-'use client' // Isolates browser context functions safe from server execution rules
-import { useState } from 'react'
-
-function InlineShareButton({ title, id }: { title: string; id: string }) {
-  const [copied, setCopied] = useState(false)
-
-  const handleShare = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation() // Prevents the <details> accordion panel from expanding/collapsing on click
-
-    const shareUrl = `${window.location.origin}${window.location.pathname}#${id}`
-
-    if (navigator.share) {
-      try {
-        await navigator.share({ title, url: shareUrl })
-      } catch (err) {
-        console.log('Sharing dismissed by user')
-      }
-    } else {
-      try {
-        await navigator.clipboard.writeText(shareUrl)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
-      } catch (err) {
-        console.error('Clipboard action failed', err)
-      }
-    }
-  }
-
-  return (
-    <button
-      onClick={handleShare}
-      className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-gray-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all select-none flex items-center gap-1.5"
-    >
-      <span>{copied ? '✓' : '🔗'}</span>
-      <span>{copied ? 'Copied!' : 'Share'}</span>
-    </button>
   )
 }
