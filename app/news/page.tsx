@@ -3,6 +3,7 @@ import imageUrlBuilder from "@sanity/image-url"
 import Image from "next/image"
 import ShareButton from "./buttonshare"
 import { Metadata } from "next"
+import HashRouter from './hashrouter'
 
 const client = createClient({
   projectId: process.env.SANITY_PROJECT_ID, 
