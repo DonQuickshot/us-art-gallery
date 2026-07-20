@@ -1,13 +1,13 @@
 import { createClient } from '@sanity/client'
 import imageUrlBuilder from '@sanity/image-url'
 import Image from 'next/image'
-import ShareButton from './ShareButton'
+import ShareButton from './buttonshare'
 import { Metadata } from 'next'
 
 const client = createClient({
   projectId: process.env.SANITY_PROJECT_ID, 
   dataset: process.env.SANITY_DATASET,     
-  apiVersion: '2026-07-01', // 👈 Updated to current valid ISO format date
+  apiVersion: '2026-07-01',
   useCdn: true, 
 })
 
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
 }
 
 async function getNewsData(): Promise<NewsPost[]> {
-  const query = `*[_type == "news"] | order(publishedAt desc)`
+  const query = \*[_type == "news"] | order(publishedAt desc)\
   return await client.fetch(query)
 }
 
@@ -59,7 +59,6 @@ export default async function NewsPage() {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "itemListElement": posts.map((post, index) => {
-      // Safe description trimmer
       const safeDesc = post.body && post.body.length > 160 
         ? post.body.substring(0, 160) + "..." 
         : post.body || "";
@@ -85,7 +84,7 @@ export default async function NewsPage() {
   return (
     <div 
       className="min-h-screen bg-fixed bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: `url('/home-bg.png')` }} 
+      style={{ backgroundImage: \url('/home-bg.png')\ }} 
     >
       <script
         type="application/ld+json"
@@ -127,7 +126,7 @@ export default async function NewsPage() {
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <ShareButton title={post.title} id={post._id} />
                       <span className="text-gray-400 group-open:rotate-180 transition-transform duration-300 text-xl font-light px-2">
-                        ▼
+                        ?
                       </span>
                     </div>
                   </summary>
@@ -156,7 +155,7 @@ export default async function NewsPage() {
                           <div key={idx} className="w-full rounded-xl overflow-hidden bg-white/5 border border-white/5 shadow-md relative h-40">
                             <Image 
                               src={urlFor(img).url()} 
-                              alt={img.alt || `${post.title} gallery exhibition image ${idx + 1}`} 
+                              alt={img.alt || \\ gallery exhibition image \\} 
                               fill
                               className="object-cover hover:scale-105 transition-transform duration-200"
                               sizes="(max-w-4xl) 33vw"
