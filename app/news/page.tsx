@@ -126,7 +126,7 @@ export default async function NewsPage() {
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <ShareButton title={post.title} id={post._id} />
                       <span className="text-gray-400 group-open:rotate-180 transition-transform duration-300 text-xl font-light px-2">
-                        ?
+                        ▼
                       </span>
                     </div>
                   </summary>
