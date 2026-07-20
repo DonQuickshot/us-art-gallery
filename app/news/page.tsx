@@ -7,7 +7,7 @@ import { Metadata } from 'next'
 const client = createClient({
   projectId: process.env.SANITY_PROJECT_ID, 
   dataset: process.env.SANITY_DATASET,     
-  apiVersion: '2026-06-25',
+  apiVersion: '2026-07-01', // 👈 Updated to current valid ISO format date
   useCdn: true, 
 })
 
@@ -25,23 +25,20 @@ interface NewsPost {
   gallery?: any[]
 }
 
-// ==========================================================================
-// 1. STATIC & DYNAMIC METADATA (Crucial for Google Search Rankings)
-// ==========================================================================
 export const metadata: Metadata = {
   title: 'News & Announcements | U.S. Art Gallery',
   description: 'Stay updated with the latest fine art events, national exhibitions, awards, and community news updates from the U.S. Art Gallery.',
   alternates: {
-    canonical: 'https://usartgallery.com', // 👈 Replace with your real domain name
+    canonical: 'https://usartgallery.com', 
   },
   openGraph: {
     title: 'News & Announcements | U.S. Art Gallery',
     description: 'Stay updated with the latest fine art events, national exhibitions, and awards.',
-    url: 'https://usartgallery.com', // 👈 Replace with your real domain name
+    url: 'https://usartgallery.com', 
     type: 'website',
     images: [
       {
-        url: '/home-bg.png', // Fallback social sharing thumbnail image
+        url: '/home-bg.png', 
         width: 1200,
         height: 630,
         alt: 'U.S. Art Gallery Announcements',
@@ -58,28 +55,31 @@ async function getNewsData(): Promise<NewsPost[]> {
 export default async function NewsPage() {
   const posts = await getNewsData()
 
-  // ==========================================================================
-  // 2. GOOGLE STRUCTURED SCHEMA DATA (JSON-LD)
-  // Tells Google crawlers exactly what text represents news articles
-  // ==========================================================================
   const jsonLdSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "itemListElement": posts.map((post, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "item": {
-        "@type": "NewsArticle",
-        "headline": post.title,
-        "datePublished": post.publishedAt,
-        "description": post.body.substring(0, 160) + "...",
-        "image": post.mainImage ? urlFor(post.mainImage).url() : undefined,
-        "author": {
-          "@type": "Organization",
-          "name": "U.S. Art Gallery"
+    "itemListElement": posts.map((post, index) => {
+      // Safe description trimmer
+      const safeDesc = post.body && post.body.length > 160 
+        ? post.body.substring(0, 160) + "..." 
+        : post.body || "";
+
+      return {
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "NewsArticle",
+          "headline": post.title,
+          "datePublished": post.publishedAt,
+          "description": safeDesc,
+          "image": post.mainImage ? urlFor(post.mainImage).url() : undefined,
+          "author": {
+            "@type": "Organization",
+            "name": "U.S. Art Gallery"
+          }
         }
       }
-    }))
+    })
   }
 
   return (
@@ -87,7 +87,6 @@ export default async function NewsPage() {
       className="min-h-screen bg-fixed bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url('/home-bg.png')` }} 
     >
-      {/* Injecting Structured Schema into the document head for SEO bots */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
@@ -96,7 +95,6 @@ export default async function NewsPage() {
       <div className="min-h-screen bg-black/75 w-full">
         <main className="max-w-4xl mx-auto p-6 md:p-12 text-white">
           
-          {/* SEO Rule: Exactly one H1 tag per page containing your primary keywords */}
           <h1 className="text-4xl font-extrabold tracking-tight mb-2 text-white">News & Announcements</h1>
           <p className="text-gray-300 mb-10 text-lg">Stay updated the latest Events and News Updates of U.S. Art Gallery.</p>
           
@@ -113,7 +111,7 @@ export default async function NewsPage() {
                   <summary className="list-none outline-none cursor-pointer p-6 md:p-8 select-none flex items-center justify-between gap-4">
                     <div>
                       <time 
-                        dateTime={post.publishedAt} // SEO Bot readable format attribute
+                        dateTime={post.publishedAt} 
                         className="text-sm font-semibold tracking-wide text-blue-400 uppercase block mb-1"
                       >
                         {new Date(post.publishedAt).toLocaleDateString('en-US', { 
@@ -137,11 +135,13 @@ export default async function NewsPage() {
                   <div className="px-6 md:px-8 pb-8 pt-2 border-t border-white/5 data-content">
                     
                     {post.mainImage && (
-                      <div className="w-full mb-6 rounded-xl overflow-hidden bg-white/5 shadow-md">
-                        <img 
+                      <div className="w-full mb-6 rounded-xl overflow-hidden bg-white/5 shadow-md relative h-64 md:h-96">
+                        <Image 
                           src={urlFor(post.mainImage).url()} 
-                          alt={post.title} // Crucial alt attribute for Google Images search matching
-                          className="w-full h-auto block" 
+                          alt={post.title} 
+                          fill
+                          className="object-cover"
+                          sizes="(max-w-4xl) 100vw"
                         />
                       </div>
                     )}
@@ -153,11 +153,13 @@ export default async function NewsPage() {
                     {post.gallery && post.gallery.length > 0 && (
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-6 items-start">
                         {post.gallery.map((img: any, idx: number) => (
-                          <div key={idx} className="w-full rounded-xl overflow-hidden bg-white/5 border border-white/5 shadow-md">
-                            <img 
+                          <div key={idx} className="w-full rounded-xl overflow-hidden bg-white/5 border border-white/5 shadow-md relative h-40">
+                            <Image 
                               src={urlFor(img).url()} 
-                              alt={img.alt || `${post.title} gallery exhibition image ${idx + 1}`} // Optimized Alt backup strings
-                              className="w-full h-auto block hover:scale-102 transition-transform duration-200" 
+                              alt={img.alt || `${post.title} gallery exhibition image ${idx + 1}`} 
+                              fill
+                              className="object-cover hover:scale-105 transition-transform duration-200"
+                              sizes="(max-w-4xl) 33vw"
                             />
                           </div>
                         ))}
